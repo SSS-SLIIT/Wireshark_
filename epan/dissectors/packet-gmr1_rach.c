@@ -475,7 +475,12 @@ _parse_dialed_number(gchar *s, int slen, tvbuff_t *tvb, int offset)
 		if (grp[i+1] <= 999)
 		{
 			/* All digits of group are valid */
-			rv += g_snprintf(s + rv, slen - rv, "%03d", grp[i]);
+			int n = g_snprintf(s + rv, slen - rv, "%03d", grp[i]);
+			if (n < 0 || n >= slen - rv)
+			{
+				break;
+			}
+			rv += n;
 		}
 		else if (grp[i+1] == 1023)
 		{
